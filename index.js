@@ -17,6 +17,9 @@ const users = [{
     password: 'guest'
   },
 ]
+const jwtCheck = expressjwt({
+  secret: 'mysupersecretkey'
+})
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -28,8 +31,9 @@ app.get('/health', (req, res) => {
     .send(`Server time is ${localTime}`);
 });
 
-app.get('/secret', (req, res) => {
-
+app.get('/secret', jwtCheck, (req, res) => {
+  res.status(200);
+  res.send('You will only see this if you are logged in');
 })
 
 app.post('/login', (req, res) => {
@@ -52,7 +56,7 @@ app.post('/login', (req, res) => {
   const token = jwt.sign({
     sub: user.id,
     username: user.username
-  }, 'mysupersecretekey', {
+  }, 'mysupersecretkey', {
     expiresIn: '3 hours'
   });
   res
