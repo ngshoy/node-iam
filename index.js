@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-const expressjwt = require('express-jwt');
 const cors = require('cors');
 
 const app = express();
@@ -17,9 +16,6 @@ const users = [{
     password: 'guest'
   },
 ]
-const jwtCheck = expressjwt({
-  secret: 'mysupersecretkey'
-})
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -30,11 +26,6 @@ app.get('/health', (req, res) => {
     .status(200)
     .send(`Server time is ${localTime}`);
 });
-
-app.get('/secret', jwtCheck, (req, res) => {
-  res.status(200);
-  res.send('You will only see this if you are logged in');
-})
 
 app.post('/login', (req, res) => {
   if (!req.body.username || !req.body.password) {
