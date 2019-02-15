@@ -1,7 +1,12 @@
+require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const {
+  insertUserData,
+  retrieveUserData
+} = require('./db/user');
 
 const app = express();
 const PORT = process.env.PORT || 8888;
@@ -20,11 +25,31 @@ const users = [{
 app.use(bodyParser.json());
 app.use(cors());
 
+const handleRequest = async (req, res, cb, params) => {
+  let document;
+
+  try {
+    document = await cb(...params);
+  } catch (err) {
+    const errCode = getErrorCode(err);
+    return res.status(errCode).send(err);
+  }
+
+  if (!document) {
+    return res.status(404).send();
+  }
+  return res.status(200).send(document);
+}
+
 app.get('/health', (req, res) => {
   const localTime = (new Date()).toLocaleTimeString();
   res
     .status(200)
     .send(`Server time is ${localTime}`);
+});
+
+app.post('/CreateUser', (req, res) => {
+  handleRequest(req, res, insertUserData, [req.body]);
 });
 
 app.post('/login', (req, res) => {
