@@ -25,6 +25,16 @@ const users = [{
 app.use(bodyParser.json());
 app.use(cors());
 
+const getErrorCode = err => {
+  let errCode;
+  if (err.name === 'ValidationError' || err.name === 'CastError') {
+    errCode = 400;
+  } else {
+    errCode = 500;
+  }
+  return errCode;
+}
+
 const handleRequest = async (req, res, cb, params) => {
   let document;
 
