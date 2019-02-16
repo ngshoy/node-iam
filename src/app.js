@@ -41,6 +41,7 @@ const handleRequest = async (req, res, cb, params) => {
   try {
     document = await cb(...params);
   } catch (err) {
+    console.error(err);
     const errCode = getErrorCode(err);
     return res.status(errCode).send(err);
   }
