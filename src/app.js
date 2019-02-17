@@ -10,17 +10,6 @@ const {
 
 const app = express();
 const PORT = process.env.PORT || 8888;
-const users = [{
-    id: 1,
-    username: 'admin',
-    password: 'admin'
-  },
-  {
-    id: 2,
-    username: 'guest',
-    password: 'guest'
-  },
-]
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -59,20 +48,18 @@ app.get('/health', (req, res) => {
     .send(`Server time is ${localTime}`);
 });
 
-app.post('/CreateUser', (req, res) => {
+app.put('/CreateUser', (req, res) => {
   handleRequest(req, res, insertUserData, [req.body]);
 });
 
-app.post('/login', (req, res) => {
-  if (!req.body.username || !req.body.password) {
+app.post('/login', async (req, res) => {
+  if (!req.body.userName || !req.body.password) {
     res.status(400);
-    res.send('You need a username and password');
+    res.send('You need a userName and password');
     return;
   }
 
-  const user = users.find(u => {
-    return u.username === req.body.username && u.password === req.body.password;
-  });
+  const user = await retrieveUserData(req.body);
 
   if (!user) {
     res.status(401);
@@ -81,8 +68,8 @@ app.post('/login', (req, res) => {
   }
 
   const token = jwt.sign({
-    sub: user.id,
-    username: user.username
+    sub: user.userName,
+    userName: user.userName
   }, 'mysupersecretkey', {
     expiresIn: '3 hours'
   });

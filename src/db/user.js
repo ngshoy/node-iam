@@ -9,8 +9,8 @@ const insertUserData = data => {
   return newUser.save();
 }
 
-const retrieveUserData = userId => {
-  return User.findOne({ userId });
+const retrieveUserData = ({ userName, password }) => {
+  return User.findOne({ userName, password });
 }
 
 module.exports = {

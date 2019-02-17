@@ -1,21 +1,30 @@
 const { model } = require('mongoose');
 
 const User = model('User', {
-  userId: {
+  userName: {
     type: String,
     required: true,
     minLength: 1
-  },
-  firstName: {
-    type: String
-  },
-  lastName: {
-    type: String
   },
   password: {
     type: String,
     required: true,
     minLength: 8
+  },
+  firstName: {
+    type: String,
+    required: true,
+    minLength: 1
+  },
+  lastName: {
+    type: String,
+    required: true,
+    minLength: 1
+  },
+  email: {
+    type: String,
+    required: true,
+    minLength: 1
   }
 });
 
